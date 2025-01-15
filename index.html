@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Космический фарм</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1e1e2f;
+            color: #ffffff;
+            text-align: center;
+            padding: 20px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        .rating {
+            margin-top: 20px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <h1>Космический фарм</h1>
+    <p>Ваши поинты: <span id="points">0</span></p>
+    <button id="farmButton" onclick="startFarm()">Фармить поинты</button>
+    <div class="rating">
+        <h2>Рейтинг</h2>
+        <ul id="ratingList"></ul>
+    </div>
+
+    <script>
+        let isFarming = false;
+
+        // Функция для начала фарма
+        function startFarm() {
+            if (isFarming) return;
+            isFarming = true;
+            document.getElementById('farmButton').disabled = true;
+
+            // Отправляем запрос на сервер для начала фарма
+            Telegram.WebApp.sendData(JSON.stringify({ action: 'start_farm' }));
+
+            // Симуляция фарма (30 секунд)
+            setTimeout(() => {
+                isFarming = false;
+                document.getElementById('farmButton').disabled = false;
+                updatePoints();
+                updateRating();
+            }, 30000);
+        }
+
+        // Функция для обновления поинтов
+        function updatePoints() {
+            Telegram.WebApp.sendData(JSON.stringify({ action: 'get_points' }));
+        }
+
+        // Функция для обновления рейтинга
+        function updateRating() {
+            Telegram.WebApp.sendData(JSON.stringify({ action: 'get_rating' }));
+        }
+
+        // Обработка данных от бота
+        Telegram.WebApp.onEvent('message', (data) => {
+            const message = JSON.parse(data);
+            if (message.action === 'update_points') {
+                document.getElementById('points').textContent = message.points;
+            } else if (message.action === 'update_rating') {
+                const ratingList = document.getElementById('ratingList');
+                ratingList.innerHTML = message.rating.map(user => `
+                    <li>${user.name}: ${user.points} поинтов</li>
+                `).join('');
+            }
+        });
+
+        // Инициализация
+        Telegram.WebApp.ready();
+        updatePoints();
+        updateRating();
+    </script>
+</body>
+</html>
