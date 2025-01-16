@@ -3,7 +3,12 @@
 
     // Инициализация Mini App
     Telegram.WebApp.ready();
-
+  if (window.Telegram && window.Telegram.WebApp) {
+        console.log("Telegram Web App API загружен");
+        Telegram.WebApp.ready();
+    } else {
+        console.error("Telegram Web App API не загружен");
+    }
     // Функция для начала фарма
     function startFarm() {
         if (isFarming) return;
