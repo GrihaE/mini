@@ -57,7 +57,6 @@
                 isFarming = false;
                 document.getElementById('farmButton').disabled = false;
                 updatePoints();
-                updateRating();
             }, 30000);
         }
 
@@ -66,28 +65,17 @@
             Telegram.WebApp.sendData(JSON.stringify({ action: 'get_points' }));
         }
 
-        // Функция для обновления рейтинга
-        function updateRating() {
-            Telegram.WebApp.sendData(JSON.stringify({ action: 'get_rating' }));
-        }
-
         // Обработка данных от бота
         Telegram.WebApp.onEvent('message', (data) => {
             const message = JSON.parse(data);
             if (message.action === 'update_points') {
                 document.getElementById('points').textContent = message.points;
-            } else if (message.action === 'update_rating') {
-                const ratingList = document.getElementById('ratingList');
-                ratingList.innerHTML = message.rating.map(user => `
-                    <li>${user.name}: ${user.points} поинтов</li>
-                `).join('');
             }
         });
 
         // Инициализация
         Telegram.WebApp.ready();
         updatePoints();
-        updateRating();
     </script>
 </body>
 </html>
