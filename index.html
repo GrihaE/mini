@@ -25,26 +25,26 @@
             background-color: #cccccc;
             cursor: not-allowed;
         }
+        .rating {
+            margin-top: 20px;
+            text-align: left;
+        }
     </style>
 </head>
 <body>
     <h1>Космический фарм</h1>
     <p>Ваши поинты: <span id="points">0</span></p>
     <button id="farmButton" onclick="startFarm()">Фармить поинты</button>
+    <div class="rating">
+        <h2>Рейтинг</h2>
+        <ul id="ratingList"></ul>
+    </div>
 
     <script>
-        // Инициализация Telegram Web App API
-        Telegram.WebApp.ready();
-        console.log("Mini App инициализирован");
-
         let isFarming = false;
 
-          if (window.Telegram && window.Telegram.WebApp) {
-        console.log("Telegram Web App API загружен");
+        // Инициализация Mini App
         Telegram.WebApp.ready();
-    } else {
-        console.error("Telegram Web App API не загружен");
-    }
 
         // Функция для начала фарма
         function startFarm() {
@@ -54,7 +54,7 @@
 
             // Отправляем запрос на сервер для начала фарма
             const data = { action: 'start_farm' };
-            console.log("Отправка данных в бота:", data);
+            console.log("Отправка данных в бота:", data); // Логирование
             Telegram.WebApp.sendData(JSON.stringify(data));
 
             // Симуляция фарма (30 секунд)
@@ -68,13 +68,13 @@
         // Функция для обновления поинтов
         function updatePoints() {
             const data = { action: 'get_points' };
-            console.log("Запрос поинтов:", data);
+            console.log("Запрос поинтов:", data); // Логирование
             Telegram.WebApp.sendData(JSON.stringify(data));
         }
 
         // Обработка данных от бота
         Telegram.WebApp.onEvent('message', (data) => {
-            console.log("Получены данные от бота:", data);
+            console.log("Получены данные от бота:", data); // Логирование
             const message = JSON.parse(data);
             if (message.action === 'update_points') {
                 document.getElementById('points').textContent = message.points;
