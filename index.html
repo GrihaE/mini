@@ -25,21 +25,27 @@
             background-color: #cccccc;
             cursor: not-allowed;
         }
+        .error {
+            color: red;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
     <h1>Космический фарм</h1>
     <p>Ваши поинты: <span id="points">0</span></p>
     <button id="farmButton" onclick="startFarm()">Фармить поинты</button>
+    <p id="errorMessage" class="error"></p>
 
     <script>
-        // Проверка загрузки Telegram Web App API
+        // Проверка, запущен ли Mini App через Telegram
         if (window.Telegram && window.Telegram.WebApp) {
             console.log("Telegram Web App API загружен");
             Telegram.WebApp.ready();
         } else {
             console.error("Telegram Web App API не загружен");
-            alert("Откройте Mini App через Telegram!");
+            document.getElementById('errorMessage').textContent = "Откройте Mini App через Telegram!";
+            document.getElementById('farmButton').disabled = true;
         }
 
         let isFarming = false;
